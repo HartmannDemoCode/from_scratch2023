@@ -5,70 +5,108 @@ import dk.cphbusiness.daos.EmployeeDao;
 import dk.cphbusiness.daos.IDAO;
 import dk.cphbusiness.dtos.EmployeeDTO;
 import dk.cphbusiness.entities.Employee;
+import dk.cphbusiness.errorHandling.ApiException;
 import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityNotFoundException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class EmployeeHandler {
-    private IDAO<Employee> dao;
-    public EmployeeHandler getEmployeeHandler() {
+public class EmployeeHandler implements IController{
+    private static IDAO<Employee> dao;
+    private static EmployeeHandler employeeHandler;
+
+    public static EmployeeHandler getHandler() {
         if(dao==null){
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
         dao = EmployeeDao.getEmployeeDao(emf);
         }
-        return this;
+        if(employeeHandler == null)
+            employeeHandler = new EmployeeHandler();
+        return employeeHandler;
     }
     // Private constructor to ensure Singleton
     private EmployeeHandler(){}
 
-    public void getAllEmployees(Context context) {
-        List<Employee> employees = dao.getAll();
-        context.json(employees);
+    @Override
+    public Handler getAll() {
+        return context -> {
+            List<Employee> employees = dao.getAll();
+            context.json(employees);
+        };
     }
 // get employee by id
-    public void getEmployeeById(Context context) {
-        String id = context.pathParam("id");
-        Employee employee = dao.getById(id);
-        context.json(employee);
+    @Override
+    public Handler getById() throws EntityNotFoundException {
+        return new Handler(){
+            @Override
+            public void handle(Context ctx) throws Exception {
+                String id = ctx.pathParam("id");
+                Employee employee = dao.getById(id);
+                ctx.json(employee);
+            }
+        };
     }
 // create employee
-    public void createEmployee(Context context) throws Exception {
-        EmployeeDTO employeeDTO = getValidatedDTO(context);
-        Employee employee = employeeDTO.asEntity();
-//        Employee employee = context.bodyAsClass(Employee.class);
-        Employee createdEmployee = dao.create(employee);
-        context.json(new EmployeeDTO(createdEmployee));
+    @Override
+    public Handler create() {
+        return new Handler() {
+            @Override
+            public void handle(Context context) throws Exception {
+                EmployeeDTO employeeDTO = getValidatedDTO(context);
+                Employee employee = employeeDTO.asEntity();
+                Employee createdEmployee = null;
+                try {
+                    createdEmployee = dao.create(employee);
+                } catch (Exception e) {
+                    context.status(404).json(new ApiException(404, e.getMessage()));
+                }
+                context.json(new EmployeeDTO(createdEmployee));
+            }
+        };
     }
     // update employee
-    public void updateEmployee(Context context){
-        String validatedId = context
-                .pathParamAsClass("id", String.class)
-                .check(pathParamId -> dao.validateId(pathParamId), "No Employee with provided id found")
-                .get();
-        Long id = Long.parseLong(validatedId);
-        Employee employee = getValidatedDTO(context).asEntity();
-        employee.setId(id);
-        Employee updatedEmployee = dao.update(employee);
-        context.json(new EmployeeDTO(updatedEmployee));
+    @Override
+    public Handler update(){
+        return new Handler() {
+            @Override
+            public void handle(Context context) throws Exception {
+                String validatedId = context
+                        .pathParamAsClass("id", String.class)
+                        .check(pathParamId -> dao.validateId(pathParamId), "No Employee with provided id found")
+                        .get();
+                Long id = Long.parseLong(validatedId);
+                Employee employee = getValidatedDTO(context).asEntity();
+                employee.setId(id);
+                Employee updatedEmployee = dao.update(employee);
+                context.json(new EmployeeDTO(updatedEmployee));
+            }
+    };
     }
     // delete employee
-    public void deleteEmployee(Context context){
-        String validatedId = context
-                .pathParamAsClass("id", String.class)
-                .check(pathParamId -> dao.validateId(pathParamId), "No Employee with provided id found")
-                .get();
-        Long id = Long.parseLong(validatedId);
-        Employee deletedEmployee = dao.delete(id);
-        context.json(new EmployeeDTO(deletedEmployee));
+    @Override
+    public Handler delete(){
+        return new Handler() {
+            @Override
+            public void handle(@NotNull Context context) throws Exception {
+                String validatedId = context
+                        .pathParamAsClass("id", String.class)
+                        .check(pathParamId -> dao.validateId(pathParamId), "No Employee with provided id found")
+                        .get();
+                Long id = Long.parseLong(validatedId);
+                Employee deletedEmployee = dao.delete(id);
+                context.json(new EmployeeDTO(deletedEmployee));
+            }
+        };
     }
 
     private EmployeeDTO getValidatedDTO(Context ctx) {
         return ctx.bodyValidator(EmployeeDTO.class)
-//                .check(p -> p.getAge() > 0 && p.getAge() < 120, "Age must be between 0 and 120")
-                .check(p -> p.getFirstName().length() > 0, "First name must be longer than 0 characters")
-                .check(p -> p.getLastName().length() > 0, "Last name must be longer than 0 characters")
-                .check(p -> p.getEmail().matches("^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$"), "Email must be valid")
+                .check(emp -> emp.getFirstName().length() > 0, "First name must be longer than 0 characters")
+                .check(emp -> emp.getLastName().length() > 0, "Last name must be longer than 0 characters")
+                .check(emp -> emp.getEmail().matches("^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$"), "Email must be valid")
                 .get();
     }
 }

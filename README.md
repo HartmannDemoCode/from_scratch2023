@@ -20,9 +20,13 @@ This is a simple REST API that allows you to create, read, update and delete;
 - Rest Assured (API Testing)
 
 ## Step 1: Setup the project
+
 - new project -> maven -> java 17 -> artifactID and groupID -> finish
+
 ### pom.xml - Project Object Model (properties, dependencies and build)
+
 - add properties to pom.xml (inside <project> tag):
+
 ```xml
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,17 +42,24 @@ This is a simple REST API that allows you to create, read, update and delete;
     <testcontainers.version>1.18.0</testcontainers.version>
     <logging.version>2.14.1</logging.version>
     <lombok.version>1.18.20</lombok.version>
+    <jbcrypt.version>0.4</jbcrypt.version>
+    <jwt.version>9.0.1</jwt.version>
+
     <!-- DATABASE PROJECT NAME ON SERVER  -->
     <db.name>projectdb</db.name>
     <javalin.port>7070</javalin.port>
 </properties>
 ```
+
 - add dependencies below *properties* to pom.xml:
+
 ```xml
 <dependencies>
 </dependencies>
 ```
+
 - add build section below *dependencies* to pom.xml:
+
 ```xml
 <build>
         <finalName>app</finalName> <!-- This is the name of the jar file -->
@@ -56,8 +67,11 @@ This is a simple REST API that allows you to create, read, update and delete;
         </plugins>
 </build>
 ```
+
 ### Dependencies
+
 - Inside *dependencies* add **Javalin** for restful api (Study: https://javalin.io/documentation#getting-started)
+
 ```xml
 <dependency>
     <groupId>io.javalin</groupId>
@@ -65,7 +79,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <version>${javalin.version}</version>
 </dependency>
 ```
+
 - add **Jackson** for serialization/deserialization of JSON (Study:https://www.baeldung.com/jackson):
+
 ```xml
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
@@ -73,7 +89,10 @@ This is a simple REST API that allows you to create, read, update and delete;
     <version>${jackson.version}</version>
 </dependency>
 ```
-- add **Hibernate** for JPA (Study:https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/The-JPA-and-Hibernate-CRUD-operations-example):
+
+- add **Hibernate** for JPA (
+  Study:https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/The-JPA-and-Hibernate-CRUD-operations-example):
+
 ```xml
 <dependency>
     <groupId>org.hibernate.orm</groupId>
@@ -81,7 +100,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <version>${hibernate.version}</version>
 </dependency>
 ```
+
 - add **PostgreSQL** for database (Study:https://www.postgresqltutorial.com/postgresql-getting-started/):
+
 ```xml
 <dependency>
     <groupId>org.postgresql</groupId>
@@ -89,6 +110,28 @@ This is a simple REST API that allows you to create, read, update and delete;
     <version>${postgresql.version}</version>
 </dependency>
 ```
+
+- add security package: **JBCrypt** for password hashing (Study:https://www.baeldung.com/java-password-hashing):
+
+```xml
+<!--        https://www.mindrot.org/projects/jBCrypt/ for Hashing passwords-->
+<dependency>
+    <groupId>org.mindrot</groupId>
+    <artifactId>jbcrypt</artifactId>
+    <version>${jbcrypt.version}</version>
+</dependency>
+```
+
+- add security package: **JWT** for authentication
+```xml
+<!--  https://nimbusds.com/products/nimbus-jose-jwt   -->
+<dependency>
+    <groupId>com.nimbusds</groupId>
+    <artifactId>nimbus-jose-jwt</artifactId>
+    <version>${jwt.version}</version>
+</dependency>
+```
+  
 - add **jUnit** for unit testing (Study:https://www.baeldung.com/junit-5  ):
 ```xml
 <dependency>
@@ -110,7 +153,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <scope>test</scope>
 </dependency>
 ```
+
 - add **Rest Assured** for API testing (Study:https://www.baeldung.com/rest-assured-tutorial):
+
 ```xml
 <dependency>
     <groupId>io.rest-assured</groupId>
@@ -119,7 +164,10 @@ This is a simple REST API that allows you to create, read, update and delete;
     <scope>test</scope>
 </dependency>
 ```
-- OPTIONAL: add **Rest Assured JSON schema validation** for API testing (Study: https://medium.com/@iamfaisalkhatri/how-to-perform-json-schema-validation-using-rest-assured-64c3b6616a91):
+
+- OPTIONAL: add **Rest Assured JSON schema validation** for API testing (
+  Study: https://medium.com/@iamfaisalkhatri/how-to-perform-json-schema-validation-using-rest-assured-64c3b6616a91):
+
 ```xml
 <dependency>
     <groupId>io.rest-assured</groupId>
@@ -128,7 +176,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <scope>test</scope>
 </dependency>
 ```
+
 - add **Testcontainers** for integration testing (Study:https://java.testcontainers.org/quickstart/junit_5_quickstart/):
+
 ```xml
 <dependency>
     <groupId>org.testcontainers</groupId>
@@ -154,7 +204,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <scope>test</scope>
 </dependency>
 ```
+
 - OPTIONAL add **Mockito** for mocking in test (https://www.baeldung.com/mockito-annotations):
+
 ```xml
 <dependency>
     <groupId>org.mockito</groupId>
@@ -169,7 +221,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <scope>test</scope>
 </dependency>
 ```
+
 - OPTIONAL add **Log4j** for logging (https://www.baeldung.com/log4j2-xml):
+
 ```xml
 <dependency>
     <groupId>ch.qos.logback</groupId>
@@ -187,7 +241,9 @@ This is a simple REST API that allows you to create, read, update and delete;
     <version>2.0.7</version>
 </dependency>
 ```
+
 - OPTIONAL add **Lombok** for less boilerplate code (https://www.baeldung.com/intro-to-project-lombok):
+
 ```xml
 <dependency>
   <!--   lombok        -->
@@ -197,8 +253,12 @@ This is a simple REST API that allows you to create, read, update and delete;
   <scope>provided</scope>
 </dependency>
 ```
+
 ### Plugins
-- add **Maven Properties** Plugin to pom.xml inside the build.plugins section (Study:https://www.baeldung.com/java-accessing-maven-properties)
+
+- add **Maven Properties** Plugin to pom.xml inside the build.plugins section (
+  Study:https://www.baeldung.com/java-accessing-maven-properties)
+
 ```xml
 <plugin>
     <!--  https://www.baeldung.com/java-accessing-maven-properties  -->
@@ -218,7 +278,11 @@ This is a simple REST API that allows you to create, read, update and delete;
     </executions>
 </plugin>
 ```
-- add **Surefire Plugin** for automatic testing to pom.xml inside the build.plugins section (Study:https://www.baeldung.com/maven-surefire-report-plugin). By default, surefire automatically includes all test classes whose name starts with Test, or ends with Test, Tests or TestCase.
+
+- add **Surefire Plugin** for automatic testing to pom.xml inside the build.plugins section (
+  Study:https://www.baeldung.com/maven-surefire-report-plugin). By default, surefire automatically includes all test
+  classes whose name starts with Test, or ends with Test, Tests or TestCase.
+
 ```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -226,7 +290,10 @@ This is a simple REST API that allows you to create, read, update and delete;
     <version>3.0.0</version>
 </plugin>
 ```
-- add **Maven Shade Plugin** for creating a fat jar to pom.xml inside the build.plugins section (Study:https://www.baeldung.com/executable-jar-with-maven)
+
+- add **Maven Shade Plugin** for creating a fat jar to pom.xml inside the build.plugins section (
+  Study:https://www.baeldung.com/executable-jar-with-maven)
+
 ```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -268,10 +335,14 @@ This is a simple REST API that allows you to create, read, update and delete;
     </executions>
 </plugin>
 ```
+
 - In the maven shade plugin remember to change the main class to the main class of your application
 - Now remember to click the *load maven changes* button in the top right corner of the maven tab in IntelliJ
+
 ## Step 2: Add a web server
+
 - Open your Main class file and change the main method to the following code:
+
 ```java
 public static void main(String[] args) {
     Javalin app = Javalin.create().start(7070);
@@ -280,14 +351,19 @@ public static void main(String[] args) {
     });
 }
 ```
+
 - add this import: `import io.javalin.Javalin; `
 - now start the application and go to http://localhost:7070/api/demo in your browser
     - you should see the text "Hello World" in your browser
+
 ## Step 3: Add a database
+
 ### Entities
+
 - create 2 new files in a package: entities:
     - Employee.java
     - Department.java
+
 ```java
 package entities;
 
@@ -324,7 +400,9 @@ public class Employee {
     }
 }
 ``` 
+
 and
+
 ```java
 package entities;
 
@@ -371,10 +449,13 @@ public class Department {
     }
 }
 ```
+
 ### DTOs
+
 - create 2 new files in a package: dtos:
     - EmployeeDTO.java
     - DepartmentDTO.java
+
 ```java
 package dtos;
 
@@ -428,7 +509,9 @@ public class EmployeeDTO {
     }
 }
 ```
+
 and
+
 ```java
 package dtos;
 
@@ -470,9 +553,12 @@ public class DepartmentDTO {
     }
 }
 ```
+
 ### DAOs
+
 - create 1 new file in a package: daos:
-  - EmployeeDAO.java
+    - EmployeeDAO.java
+
 ```java
 public interface IDAO<T> {
   T create(T t) throws Exception;
@@ -484,15 +570,18 @@ public interface IDAO<T> {
 
 }
 ```
+
 - create 2 new files in a package: daos, that implements the IDAO interface:
-  - EmployeeDAO.java
-  - DepartmentDAO.java
+    - EmployeeDAO.java
+    - DepartmentDAO.java
 - create a new file in a package: exceptions:
-  - EntityNotFoundException.java
+    - EntityNotFoundException.java
 
 ### Setup database connection and JPA configuration
+
 - create a new file in a package: utils:
-  - HibernateConfig.java
+    - HibernateConfig.java
+
 ```java
 package dk.cphbusiness.config;
 
@@ -606,15 +695,27 @@ public class HibernateConfig {
   }
 }
 ```
+
+### Register Entities in HibernateConfig.java
+
+- add the following lines to the getAnnotationConfiguration method:
+
+```java
+configuration.addAnnotatedClass(Department.class);
+configuration.addAnnotatedClass(Employee.class);
+```
+
 ### Test your DAO
+
 - create a main method in the EmployeeDAO.java file, to test the methods
 - create a main method in the DepartmentDAO.java file, to test the methods
 - Create a test class for your DAO
 -
 
-
 ### Properties from POM.xml
+
 - create a util method:
+
 ```java
 public static String getPomProp(String propName)  {
         InputStream is = dk.cphbusiness.utils.Utils.class.getClassLoader().getResourceAsStream("properties-from-pom.properties");
@@ -627,16 +728,23 @@ public static String getPomProp(String propName)  {
         return pomProperties.getProperty(propName);
         }
 ```
+
 ### Build your project with maven
+
 - In Intellij -> maven tab -> Build tools settings -> check "Delegate IDE build/run actions to maven"
 - Build the project (green hammer icon)
 - Add your database name and javalin port to the pom.xml properties, so they can be read with the above method.
 
 ## Create a REST API
+
 ### Create Routes and Handlers
+
 - create a new package: rest:
 - create a new file: RootRoutes.java
-- In RootRoutes.java create a method to set up the root path. It returns an EndpointGroup, which is a functional interface. It has a method called getEndpoints, which returns a list of endpoints. The EndpointGroup is used to group endpoints together. 
+- In RootRoutes.java create a method to set up the root path. It returns an EndpointGroup, which is a functional
+  interface. It has a method called getEndpoints, which returns a list of endpoints. The EndpointGroup is used to group
+  endpoints together.
+
 ```java
 public static EndpointGroup getRoutes(Javalin app) {
         return () -> {
@@ -647,12 +755,16 @@ public static EndpointGroup getRoutes(Javalin app) {
         };
     }
 ```
+
 - change your main method in Main.java to use the getRoutes method:
+
 ```java
 app.routes(RootRoutes.getRoutes(app));
 ```
+
 - create a new file: EmployeeRoutes.java
 - create a method to set up the employee routes:
+
 ```java
 public static EndpointGroup getEmployeeRoutes() {
         return () -> {
@@ -668,14 +780,30 @@ public static EndpointGroup getEmployeeRoutes() {
         };
     }
 ```
+
 - create the EmployeeController.java file
 - create a method to get all employees:
+
 ```java
 public static void getEmployees(Context context) {
         List<Employee> employees = employeeDAO.getAllEmployees();
         context.json(employees);
     }
 ```
+### Security
+- create an interface with the following methods (U for User, R for Role):
+```java
+public interface ISecurityDAO<U,R> {
+U getVerifiedUser(String username, String password);
+R createRole(String role);
+boolean hasRole(String role, User user);
+String createToken(String username, Set<String> roles);
+U verifyToken(String token);
+}
+```
+- implement the interface in a UserDao file
+- implement the IDAO interface in the UserDao file as well
+- 
 
 
 
@@ -688,4 +816,3 @@ public static void getEmployees(Context context) {
 
 
 
-# repo auto created

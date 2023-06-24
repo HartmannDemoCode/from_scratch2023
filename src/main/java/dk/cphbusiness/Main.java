@@ -1,5 +1,8 @@
 package dk.cphbusiness;
 import dk.cphbusiness.config.ApplicationConfig;
+import dk.cphbusiness.errorHandling.ApiException;
+import dk.cphbusiness.errorHandling.NotAuthorizedException;
+import dk.cphbusiness.rest.controllers.EmployeeHandler;
 import io.javalin.Javalin;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.config.JavalinConfig;
@@ -14,29 +17,29 @@ public class Main {
 //        app.get("/api/demo", ctx -> {
 //            ctx.result("Hello World");
 //        });
-        // Configure the web server
+        // Configure the web server and setting base route to /api
         Javalin app = Javalin.create(config -> ApplicationConfig.configurations(config));
         // Configure the routes
-        app.routes(Routes.getRoutes(app));
+        app.routes(getRoutes(app));
         ApplicationConfig.startServer(app);
     }
-    public EndpointGroup getRoutes(Javalin app) {
+    public static EndpointGroup getRoutes(Javalin app) {
         return () -> {
             app.routes(() -> {
-//                path("/", authenticationRoutes.getRoutes());
+                path("/", authenticationRoutes.getRoutes());
                 path("/", getEmployeeRoutes());
             });
-//            app.exception(ApiException.class, (e, ctx) -> {
-//                ctx.res().setStatus(e.getStatusCode());
-//                ctx.json(new ApiException( e.getStatusCode(), e.getMessage()));
-//            });
-//            app.exception(NotAuthorizedException.class, (e, ctx) -> {
-//                ctx.res().setStatus(e.getStatusCode());
-//                ctx.json(new NotAuthorizedException(e.getStatusCode(), e.getMessage()));
-//            });
+            app.exception(ApiException.class, (e, ctx) -> {
+                ctx.res().setStatus(e.getStatusCode());
+                ctx.json(e);
+            });
+            app.exception(NotAuthorizedException.class, (e, ctx) -> {
+                ctx.res().setStatus(e.getStatusCode());
+                ctx.json(e);
+            });
             app.exception(Exception.class, (e, ctx) -> {
                 ctx.res().setStatus(500);
-                ctx.json(new Exception(e.getMessage()));
+                ctx.json(e);
             });
             app.after(ctx -> {
                 // TODO: Add logging
@@ -44,16 +47,17 @@ public class Main {
             });
         };
     }
-    private EndpointGroup getEmployeeRoutes() {
+    private static EndpointGroup getEmployeeRoutes() {
+        EmployeeHandler employeeHandler = EmployeeHandler.getHandler();
 
         return () -> {
-            path("/person", () -> {
+            path("/employee", () -> {
                 //before("/", authenticationHandler.authenticate);
-                post("/", employeeHandler.createPerson);
-                get("/", employeeHandler.getAllPersons);
-                get("{id}", employeeHandler.getPersonById);
-                put("{id}", employeeHandler.updatePersonById);
-                delete("{id}", employeeHandler.deletePersonById);
+                post("/", employeeHandler.create());
+                get("/", employeeHandler.getAll());
+                get("{id}", employeeHandler.getById());
+                put("{id}", employeeHandler.update());
+                delete("{id}", employeeHandler.delete());
             });
         };
     }

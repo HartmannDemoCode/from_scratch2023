@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import dk.cphbusiness.utils.Utils;
+import io.javalin.plugin.bundled.RouteOverviewPlugin;
 
 public class ApplicationConfig {
 
@@ -27,7 +28,8 @@ public class ApplicationConfig {
         });
 
         // routing
-        config.routing.contextPath = "/api/v1"; // base path for all routes
+        config.routing.contextPath = "/api"; // base path for all routes
+//        config.plugins.register(new RouteOverviewPlugin("/routes")); // overview of all registered routes at /routes for api documentation
     }
 
     public static void startServer(Javalin app) {
