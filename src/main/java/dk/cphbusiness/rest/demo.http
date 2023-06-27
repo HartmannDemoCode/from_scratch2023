@@ -1,0 +1,30 @@
+###
+GET {{url}}/employee HTTP/1.1
+
+###
+POST http://localhost:7070/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+> {% client.global.set("token", response.body.token); %}
+
+###
+POST {{url}}/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+###
+GET {{url}}/employee HTTP/1.1
+Authorization: Bearer {{token}}
+
+###
+GET {{url}}/token-tester HTTP/1.1
+Authorization: Bearer {{token}}

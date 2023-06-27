@@ -15,12 +15,13 @@ import lombok.*;
 public class UserDTO implements IDTO<User> {
 
     private String username;
-
     private String password;
-
     private Set<String> roles;
 
     public UserDTO(User user) {
+        if(user == null) {
+            return;
+        }
         this.username = user.getUserName();
         this.roles = user.getRolesAsStrings();
     }

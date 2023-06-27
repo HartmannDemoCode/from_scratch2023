@@ -6,8 +6,10 @@ import java.util.Set;
 public interface ISecurityDAO<U,R> {
 U getVerifiedUser(String username, String password);
 R createRole(String role);
+U addUserRole(String username, String role);
+U removeUserRole(String username, String role);
 boolean hasRole(String role, User user);
-String createToken(String username, Set<String> roles);
-U verifyToken(String token);
+String createToken(U user) throws Exception;
+U verifyToken(String token) throws Exception;
 
 }

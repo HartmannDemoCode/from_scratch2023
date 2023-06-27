@@ -14,21 +14,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class EmployeeHandler implements IController{
+public class EmployeeController implements IController{
     private static IDAO<Employee> dao;
-    private static EmployeeHandler employeeHandler;
+    private static EmployeeController employeeHandler;
 
-    public static EmployeeHandler getHandler() {
+    public static EmployeeController getHandler() {
         if(dao==null){
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
         dao = EmployeeDao.getEmployeeDao(emf);
         }
         if(employeeHandler == null)
-            employeeHandler = new EmployeeHandler();
+            employeeHandler = new EmployeeController();
         return employeeHandler;
     }
     // Private constructor to ensure Singleton
-    private EmployeeHandler(){}
+    private EmployeeController(){}
 
     @Override
     public Handler getAll() {
