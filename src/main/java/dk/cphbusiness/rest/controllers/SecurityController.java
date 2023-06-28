@@ -122,7 +122,7 @@ public class SecurityController implements ISecurityController{
         }
         return hasAccess.get();
     }
-    // TODO: Not in use - remove:
+    // TODO: Not in use - remove (alternative to guest user in authenticate() method for public routes)):
     @Override
     public boolean excludeAuthentication(String path) {
         List<String> excludedPaths = List.of(

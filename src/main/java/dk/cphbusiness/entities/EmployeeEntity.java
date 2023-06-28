@@ -1,6 +1,5 @@
 package dk.cphbusiness.entities;
 
-import dk.cphbusiness.dtos.EmployeeDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,15 +22,15 @@ public class EmployeeEntity {
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private DepartmentEntity departmentEntity;
 
-    public EmployeeEntity(EmployeeDTO employeeDTO) {
-        this.id = employeeDTO.getId();
-        this.firstName = employeeDTO.getFirstName();
-        this.lastName = employeeDTO.getLastName();
-        this.email = employeeDTO.getEmail();
-//        if(employeeDTO.getDepartmentName() != null) {
-//            this.departmentEntity = new DepartmentEntity(employeeDTO.getDepartmentName());
-//        }
-    }
+//    public EmployeeEntity(EmployeeDTO employeeDTO) {
+//        this.id = employeeDTO.getId();
+//        this.firstName = employeeDTO.getFirstName();
+//        this.lastName = employeeDTO.getLastName();
+//        this.email = employeeDTO.getEmail();
+////        if(employeeDTO.getDepartmentName() != null) {
+////            this.departmentEntity = new DepartmentEntity(employeeDTO.getDepartmentName());
+////        }
+//    }
 
     public EmployeeEntity(String firstName, String lastName, String email) {
         this.firstName = firstName;

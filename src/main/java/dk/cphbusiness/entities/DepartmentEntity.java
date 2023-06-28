@@ -1,11 +1,10 @@
 package dk.cphbusiness.entities;
 
-import dk.cphbusiness.dtos.DepartmentDTO;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
@@ -25,15 +24,15 @@ public class DepartmentEntity {
     @OneToMany(mappedBy = "departmentEntity")
     private java.util.Set<EmployeeEntity> employeeEntities;
 
-    public DepartmentEntity(DepartmentDTO departmentDTO) {
-        this.id = departmentDTO.getId();
-        this.departmentName = departmentDTO.getDepartmentName();
-        this.departmentCode = departmentDTO.getDepartmentCode();
-        this.departmentDescription = departmentDTO.getDepartmentDescription();
-        if(departmentDTO.getEmployeeDTOs() != null) {
-            this.employeeEntities = departmentDTO.getEmployeeDTOs().stream().map(EmployeeEntity::new).collect(java.util.stream.Collectors.toSet());
-        }
-    }
+//    public DepartmentEntity(DepartmentDTO departmentDTO) {
+//        this.id = departmentDTO.getId();
+//        this.departmentName = departmentDTO.getDepartmentName();
+//        this.departmentCode = departmentDTO.getDepartmentCode();
+//        this.departmentDescription = departmentDTO.getDepartmentDescription();
+//        if(departmentDTO.getEmployeeDTOs() != null) {
+//            this.employeeEntities = departmentDTO.getEmployeeDTOs().stream().map(EmployeeEntity::new).collect(java.util.stream.Collectors.toSet());
+//        }
+//    }
 
     public void addEmployee(EmployeeEntity employeeEntity) {
         this.employeeEntities.add(employeeEntity);
