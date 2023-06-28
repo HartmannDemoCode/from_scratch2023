@@ -1,6 +1,5 @@
 package dk.cphbusiness.entities;
 
-import dk.cphbusiness.entities.Department;
 import dk.cphbusiness.dtos.EmployeeDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Employee {
+public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false, updatable = false)
@@ -22,19 +21,19 @@ public class Employee {
     private String email;
     @ManyToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id")
-    private Department department;
+    private DepartmentEntity departmentEntity;
 
-    public Employee(EmployeeDTO employeeDTO) {
+    public EmployeeEntity(EmployeeDTO employeeDTO) {
         this.id = employeeDTO.getId();
         this.firstName = employeeDTO.getFirstName();
         this.lastName = employeeDTO.getLastName();
         this.email = employeeDTO.getEmail();
 //        if(employeeDTO.getDepartmentName() != null) {
-//            this.department = new Department(employeeDTO.getDepartmentName());
+//            this.departmentEntity = new DepartmentEntity(employeeDTO.getDepartmentName());
 //        }
     }
 
-    public Employee(String firstName, String lastName, String email) {
+    public EmployeeEntity(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

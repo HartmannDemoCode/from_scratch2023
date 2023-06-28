@@ -54,8 +54,8 @@ public class Routes {
             @Override
             public void addEndpoints() {
                 path("/auth", () -> {
-                    post("/login", securityController.login());
-                    post("/register", securityController.register());
+                    post("/login", securityController.login(), Role.ANYONE);
+                    post("/register", securityController.register(), Role.ANYONE);
                 });
             }
         };

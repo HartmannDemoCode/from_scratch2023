@@ -1,33 +1,27 @@
 package dk.cphbusiness.daos;
 
 import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import dk.cphbusiness.config.HibernateConfig;
-import dk.cphbusiness.dtos.UserDTO;
-import dk.cphbusiness.entities.Department;
-import dk.cphbusiness.entities.Employee;
+import dk.cphbusiness.entities.RoleEntity;
+import dk.cphbusiness.entities.UserEntity;
 import dk.cphbusiness.errorHandling.ApiException;
 import dk.cphbusiness.errorHandling.NotAuthorizedException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.TypedQuery;
-import dk.cphbusiness.entities.User;
-import dk.cphbusiness.entities.Role;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
+public class UserDao implements IDAO<UserEntity>, ISecurityDAO<UserEntity, RoleEntity> {
     private static EntityManagerFactory emf;
     private static UserDao instance;
 
@@ -40,7 +34,7 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static IDAO<User> getUserDao(EntityManagerFactory _emf) {
+    public static IDAO<UserEntity> getUserDao(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new UserDao();
@@ -48,7 +42,7 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
         return instance;
     }
 
-    public static ISecurityDAO<User, Role> getSecurityDao(EntityManagerFactory _emf) {
+    public static ISecurityDAO<UserEntity, RoleEntity> getSecurityDao(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new UserDao();
@@ -61,46 +55,46 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
     }
 
     @Override
-    public User create(User user) throws Exception {
+    public UserEntity create(UserEntity userEntity) throws Exception {
         EntityManager em = getEntityManager();
         //Look to see if a department with the provided id exists in db
         try {
             em.getTransaction().begin();
-            user.getRoleList().forEach(role -> {
-                if (em.find(Role.class, role.getRoleName()) == null)
-                    em.persist(role);
+            userEntity.getRoleEntityList().forEach(roleEntity -> {
+                if (em.find(RoleEntity.class, roleEntity.getRoleName()) == null)
+                    em.persist(roleEntity);
             });
-            em.persist(user);
+            em.persist(userEntity);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-        return user;
+        return userEntity;
     }
 
     @Override
-    public User getById(String id) throws EntityNotFoundException {
+    public UserEntity getById(String id) throws EntityNotFoundException {
         EntityManager em = getEntityManager();
-        User user = em.find(User.class, id);
-        if (user == null)
-            throw new EntityNotFoundException("The User entity with ID: " + id + " Was not found");
-        return user;
+        UserEntity userEntity = em.find(UserEntity.class, id);
+        if (userEntity == null)
+            throw new EntityNotFoundException("The UserEntity entity with ID: " + id + " Was not found");
+        return userEntity;
     }
 
     @Override
-    public User delete(Long id) throws EntityNotFoundException {
+    public UserEntity delete(Long id) throws EntityNotFoundException {
         EntityManager em = getEntityManager();
-        User user = em.find(User.class, id);
-        if (user == null)
-            throw new EntityNotFoundException("Could not remove User with id: " + id);
+        UserEntity userEntity = em.find(UserEntity.class, id);
+        if (userEntity == null)
+            throw new EntityNotFoundException("Could not remove UserEntity with id: " + id);
         em.getTransaction().begin();
-        em.remove(user);
+        em.remove(userEntity);
         em.getTransaction().commit();
-        return user;
+        return userEntity;
     }
 
     @Override
-    public List<User> findByProperty(String property, String propValue) throws EntityNotFoundException {
+    public List<UserEntity> findByProperty(String property, String propValue) throws EntityNotFoundException {
         //return null;
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -108,7 +102,7 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
     @Override
     public boolean validateId(String id) {
         EntityManager em = getEntityManager();
-        User emp = em.find(User.class, Long.parseLong(id));
+        UserEntity emp = em.find(UserEntity.class, Long.parseLong(id));
         if (emp == null)
             return false;
         return true;
@@ -116,56 +110,56 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
 
     public static void main(String[] args) throws EntityNotFoundException, Exception {
         emf = HibernateConfig.getEntityManagerFactory();
-        IDAO<User> userDao = getUserDao(emf);
-        ISecurityDAO<User, Role> securityDAO = getSecurityDao(emf);
+        IDAO<UserEntity> userDao = getUserDao(emf);
+        ISecurityDAO<UserEntity, RoleEntity> securityDAO = getSecurityDao(emf);
 //        System.out.println("DO SOME TESTING...");
-        User user = new User("admin", "admin");
-        user.addRole("admin");
-        String token = securityDAO.createToken(user);
+        UserEntity userEntity = new UserEntity("admin", "admin");
+        userEntity.addRole("admin");
+        String token = securityDAO.createToken(userEntity);
         System.out.println(token);
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserEntity> getAll() {
         EntityManager em = getEntityManager();
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
-        List<User> users = query.getResultList();
-        return users;
+        TypedQuery<UserEntity> query = em.createQuery("SELECT u FROM UserEntity u", UserEntity.class);
+        List<UserEntity> userEntities = query.getResultList();
+        return userEntities;
     }
 
     @Override
-    public User update(User user) throws EntityNotFoundException {
+    public UserEntity update(UserEntity userEntity) throws EntityNotFoundException {
         EntityManager em = getEntityManager();
-        User found = em.find(User.class, user.getUserName());
+        UserEntity found = em.find(UserEntity.class, userEntity.getUserName());
         if (found == null)
-            throw new EntityNotFoundException("Could not update, User with id: " + user.getUserName() + " not found");
+            throw new EntityNotFoundException("Could not update, UserEntity with id: " + userEntity.getUserName() + " not found");
         try {
             em.getTransaction().begin();
-            em.merge(user);
+            em.merge(userEntity);
             em.getTransaction().commit();
-            return user;
+            return userEntity;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public User getVerifiedUser(String username, String password) {
+    public UserEntity getVerifiedUser(String username, String password) {
         EntityManager em = getEntityManager();
-        TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.userName = :username", User.class);
+        TypedQuery<UserEntity> query = em.createQuery("SELECT u FROM UserEntity u WHERE u.userName = :username", UserEntity.class);
         query.setParameter("username", username);
-        User user = query.getSingleResult();
-        if (user == null)
-            throw new EntityNotFoundException("Could not find user with username: " + username);
-        if (user.verifyPassword(password))
-            return user;
+        UserEntity userEntity = query.getSingleResult();
+        if (userEntity == null)
+            throw new EntityNotFoundException("Could not find userEntity with username: " + username);
+        if (userEntity.verifyPassword(password))
+            return userEntity;
         return null;
     }
 
     @Override
-    public Role createRole(String role) {
+    public RoleEntity createRole(String role) {
         EntityManager em = getEntityManager();
-        Role r = new Role(role);
+        RoleEntity r = new RoleEntity(role);
         try {
             em.getTransaction().begin();
             em.persist(r);
@@ -177,53 +171,53 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
     }
 
     @Override
-    public User addUserRole(String username, String role) {
+    public UserEntity addUserRole(String username, String role) {
         EntityManager em = getEntityManager();
-        User user = em.find(User.class, username);
-        if (user == null)
-            throw new EntityNotFoundException("Could not find user with username: " + username);
-        Role r = em.find(Role.class, role);
+        UserEntity userEntity = em.find(UserEntity.class, username);
+        if (userEntity == null)
+            throw new EntityNotFoundException("Could not find userEntity with username: " + username);
+        RoleEntity r = em.find(RoleEntity.class, role);
         try {
             em.getTransaction().begin();
             if (r == null) {
-                r = new Role(role);
+                r = new RoleEntity(role);
                 em.persist(r);
             }
-            user.addRole(r.getRoleName());
-            em.merge(user);
+            userEntity.addRole(r.getRoleName());
+            em.merge(userEntity);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-        return user;
+        return userEntity;
     }
 
     @Override
-    public User removeUserRole(String username, String role) {
+    public UserEntity removeUserRole(String username, String role) {
         EntityManager em = getEntityManager();
-        User user = em.find(User.class, username);
-        if (user == null)
-            throw new EntityNotFoundException("Could not find user with username: " + username);
-        Role r = em.find(Role.class, role);
+        UserEntity userEntity = em.find(UserEntity.class, username);
+        if (userEntity == null)
+            throw new EntityNotFoundException("Could not find userEntity with username: " + username);
+        RoleEntity r = em.find(RoleEntity.class, role);
         if (r == null)
             throw new EntityNotFoundException("Could not find role with name: " + role);
         try {
             em.getTransaction().begin();
-            user.getRoleList().remove(r);
+            userEntity.getRoleEntityList().remove(r);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-        return user;
+        return userEntity;
     }
 
     @Override
-    public boolean hasRole(String role, User user) {
-        return user.getRolesAsStrings().contains(role);
+    public boolean hasRole(String role, UserEntity userEntity) {
+        return userEntity.getRolesAsStrings().contains(role);
     }
 
     @Override
-    public String createToken(User user) throws Exception {
+    public String createToken(UserEntity userEntity) throws Exception {
         String ISSUER;
         String TOKEN_EXPIRE_TIME;
         String SECRET_KEY;
@@ -243,10 +237,10 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
             // https://codecurated.com/blog/introduction-to-jwt-jws-jwe-jwa-jwk/
 
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                    .subject(user.getUserName())
+                    .subject(userEntity.getUserName())
                     .issuer(ISSUER)
-                    .claim("username", user.getUserName())
-                    .claim("roles", user.getRolesAsStrings().stream().reduce((s1, s2) -> s1 + "," + s2).get())
+                    .claim("username", userEntity.getUserName())
+                    .claim("roles", userEntity.getRolesAsStrings().stream().reduce((s1, s2) -> s1 + "," + s2).get())
                     .expirationTime(new Date(new Date().getTime() + Integer.parseInt(TOKEN_EXPIRE_TIME)))
                     .build();
             Payload payload = new Payload(claimsSet.toJSONObject());
@@ -265,7 +259,7 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
 
 
     @Override
-    public User verifyToken(String token) throws Exception {
+    public UserEntity verifyToken(String token) throws Exception {
         try {
             SignedJWT signedJWT = SignedJWT.parse(token);
             boolean isDeployed = (System.getenv("DEPLOYED") != null);
@@ -283,7 +277,7 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
                 return jwt2user(signedJWT);
 //     return new UserPrincipal(username, roles);
             } else {
-                throw new JOSEException("User could not be extracted from token");
+                throw new JOSEException("UserEntity could not be extracted from token");
             }
         } catch (ParseException | JOSEException e) {
             throw new NotAuthorizedException(403, "Could not validate token");
@@ -301,15 +295,15 @@ public class UserDao implements IDAO<User>, ISecurityDAO<User, Role> {
         return (new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime() - 1000 * 60 * 5);
     }
 
-    private User jwt2user(SignedJWT jwt) throws ParseException {
+    private UserEntity jwt2user(SignedJWT jwt) throws ParseException {
         String roles = jwt.getJWTClaimsSet().getClaim("roles").toString();
         String username = jwt.getJWTClaimsSet().getClaim("username").toString();
 
-        Set<Role> rolesSet = Arrays
+        Set<RoleEntity> rolesSet = Arrays
                 .stream(roles.split(","))
-                .map(role -> new Role(role))
+                .map(role -> new RoleEntity(role))
                 .collect(Collectors.toSet());
-        return new User(username, rolesSet);
+        return new UserEntity(username, rolesSet);
     }
 
     private String readProp(String propName) throws Exception {

@@ -1,5 +1,5 @@
 ###
-GET {{url}}/employee HTTP/1.1
+GET {{url}}/employeeEntity HTTP/1.1
 
 ###
 POST http://localhost:7070/api/auth/login HTTP/1.1
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{url}}/employee HTTP/1.1
+GET {{url}}/employeeEntity HTTP/1.1
 Authorization: Bearer {{token}}
 
 ###

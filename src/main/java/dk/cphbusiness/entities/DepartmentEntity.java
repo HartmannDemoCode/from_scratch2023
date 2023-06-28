@@ -1,6 +1,5 @@
 package dk.cphbusiness.entities;
 
-import dk.cphbusiness.entities.Employee;
 import dk.cphbusiness.dtos.DepartmentDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "department")
-public class Department {
+public class DepartmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false, updatable = false)
@@ -23,23 +22,23 @@ public class Department {
     private String departmentCode;
     private String departmentDescription;
 
-    @OneToMany(mappedBy = "department")
-    private java.util.Set<Employee> employees;
+    @OneToMany(mappedBy = "departmentEntity")
+    private java.util.Set<EmployeeEntity> employeeEntities;
 
-    public Department(DepartmentDTO departmentDTO) {
+    public DepartmentEntity(DepartmentDTO departmentDTO) {
         this.id = departmentDTO.getId();
         this.departmentName = departmentDTO.getDepartmentName();
         this.departmentCode = departmentDTO.getDepartmentCode();
         this.departmentDescription = departmentDTO.getDepartmentDescription();
         if(departmentDTO.getEmployeeDTOs() != null) {
-            this.employees = departmentDTO.getEmployeeDTOs().stream().map(Employee::new).collect(java.util.stream.Collectors.toSet());
+            this.employeeEntities = departmentDTO.getEmployeeDTOs().stream().map(EmployeeEntity::new).collect(java.util.stream.Collectors.toSet());
         }
     }
 
-    public void addEmployee(Employee employee) {
-        this.employees.add(employee);
+    public void addEmployee(EmployeeEntity employeeEntity) {
+        this.employeeEntities.add(employeeEntity);
     }
-    public void removeEmployee(Employee employee) {
-        this.employees.remove(employee);
+    public void removeEmployee(EmployeeEntity employeeEntity) {
+        this.employeeEntities.remove(employeeEntity);
     }
 }

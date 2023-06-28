@@ -61,7 +61,7 @@ public class Main {
 //                get("/", ctx -> {
 //                    ctx.result("Hello World");
 //                },
-//                        Role.ANYONE);
+//                        RoleEntity.ANYONE);
 //            });
 //        };
 //    }
@@ -81,5 +81,5 @@ public class Main {
 //            });
 //        };
 //    }
-//    enum Role implements RouteRole { ANYONE, USER, ADMIN }
+//    enum RoleEntity implements RouteRole { ANYONE, USER, ADMIN }
 }

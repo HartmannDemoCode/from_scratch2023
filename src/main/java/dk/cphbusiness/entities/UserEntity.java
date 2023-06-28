@@ -14,12 +14,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@NamedQueries(@NamedQuery(name = "User.deleteAllRows", query = "DELETE from User"))
+@NamedQueries(@NamedQuery(name = "User.deleteAllRows", query = "DELETE from UserEntity"))
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -35,15 +35,15 @@ public class User implements Serializable {
             @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
             @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roleList = new LinkedHashSet<>();
+    private Set<RoleEntity> roleEntityList = new LinkedHashSet<>();
 
     public Set<String> getRolesAsStrings() {
-        if (roleList.isEmpty()) {
+        if (roleEntityList.isEmpty()) {
             return null;
         }
         Set<String> rolesAsStrings = new LinkedHashSet<>();
-        roleList.forEach((role) -> {
-            rolesAsStrings.add(role.getRoleName());
+        roleEntityList.forEach((roleEntity) -> {
+            rolesAsStrings.add(roleEntity.getRoleName());
         });
         return rolesAsStrings;
     }
@@ -52,17 +52,17 @@ public class User implements Serializable {
         return BCrypt.checkpw(pw, userPass);
     }
 
-    public User(String userName, String userPass) {
+    public UserEntity(String userName, String userPass) {
         this.userName = userName;
         this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
     }
-    public User(String userName, Set<Role> roleList) {
+    public UserEntity(String userName, Set<RoleEntity> roleEntityList) {
         this.userName = userName;
-        this.roleList = roleList;
+        this.roleEntityList = roleEntityList;
     }
 
     public void addRole(String userRole) {
-        roleList.add(new Role(userRole));
+        roleEntityList.add(new RoleEntity(userRole));
     }
 
 }

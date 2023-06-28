@@ -1,9 +1,9 @@
 package dk.cphbusiness.config;
 
-import dk.cphbusiness.entities.Department;
-import dk.cphbusiness.entities.Employee;
-import dk.cphbusiness.entities.User;
-import dk.cphbusiness.entities.Role;
+import dk.cphbusiness.entities.DepartmentEntity;
+import dk.cphbusiness.entities.EmployeeEntity;
+import dk.cphbusiness.entities.RoleEntity;
+import dk.cphbusiness.entities.UserEntity;
 import dk.cphbusiness.utils.Utils;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
@@ -11,8 +11,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class HibernateConfig {
@@ -30,10 +28,10 @@ public class HibernateConfig {
     }
     // IMPORTANT: Add Entity classes here for them to be registered with Hibernate
     public static void getAnnotationConfiguration(Configuration configuration) {
-        configuration.addAnnotatedClass(Department.class);
-        configuration.addAnnotatedClass(Employee.class);
-        configuration.addAnnotatedClass(User.class);
-        configuration.addAnnotatedClass(Role.class);
+        configuration.addAnnotatedClass(DepartmentEntity.class);
+        configuration.addAnnotatedClass(EmployeeEntity.class);
+        configuration.addAnnotatedClass(UserEntity.class);
+        configuration.addAnnotatedClass(RoleEntity.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest) {

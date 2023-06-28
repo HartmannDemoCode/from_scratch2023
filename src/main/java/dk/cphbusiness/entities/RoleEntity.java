@@ -8,8 +8,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "roles")
-@NamedQueries(@NamedQuery(name = "Role.deleteAllRows", query = "DELETE from Role"))
-public class Role implements Serializable {
+@NamedQueries(@NamedQuery(name = "Role.deleteAllRows", query = "DELETE from RoleEntity"))
+public class RoleEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -19,12 +19,12 @@ public class Role implements Serializable {
     @Column(name = "role_name", length = 20)
     private String roleName;
 
-    @ManyToMany(mappedBy = "roleList")
-    private List<User> userList;
+    @ManyToMany(mappedBy = "roleEntityList")
+    private List<UserEntity> userEntityList;
 
-    public Role() {}
+    public RoleEntity() {}
 
-    public Role(String roleName) {
+    public RoleEntity(String roleName) {
         this.roleName = roleName;
     }
 

@@ -1,6 +1,6 @@
 package dk.cphbusiness.dtos;
 
-import dk.cphbusiness.entities.Department;
+import dk.cphbusiness.entities.DepartmentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +19,13 @@ public class DepartmentDTO {
     private String departmentDescription;
     private Set<EmployeeDTO> employeeDTOs;
 
-    public DepartmentDTO(Department d) {
+    public DepartmentDTO(DepartmentEntity d) {
         this.id = d.getId();
         this.departmentName = d.getDepartmentName();
         this.departmentCode = d.getDepartmentCode();
         this.departmentDescription = d.getDepartmentDescription();
-        if(d.getEmployees() != null) {
-            this.employeeDTOs = d.getEmployees().stream().map(EmployeeDTO::new).collect(java.util.stream.Collectors.toSet());
+        if(d.getEmployeeEntities() != null) {
+            this.employeeDTOs = d.getEmployeeEntities().stream().map(EmployeeDTO::new).collect(java.util.stream.Collectors.toSet());
         }
     }
     public DepartmentDTO(String departmentName, String departmentCode, String departmentDescription) {
@@ -33,7 +33,7 @@ public class DepartmentDTO {
         this.departmentCode = departmentCode;
         this.departmentDescription = departmentDescription;
     }
-    public Set<DepartmentDTO> getDepartmentDTOs(Set<Department> departments) {
-        return departments.stream().map(DepartmentDTO::new).collect(java.util.stream.Collectors.toSet());
+    public Set<DepartmentDTO> getDepartmentDTOs(Set<DepartmentEntity> departmentEntities) {
+        return departmentEntities.stream().map(DepartmentDTO::new).collect(java.util.stream.Collectors.toSet());
     }
 }

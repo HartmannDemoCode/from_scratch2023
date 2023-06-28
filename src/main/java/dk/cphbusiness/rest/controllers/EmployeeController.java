@@ -4,7 +4,7 @@ import dk.cphbusiness.config.HibernateConfig;
 import dk.cphbusiness.daos.EmployeeDao;
 import dk.cphbusiness.daos.IDAO;
 import dk.cphbusiness.dtos.EmployeeDTO;
-import dk.cphbusiness.entities.Employee;
+import dk.cphbusiness.entities.EmployeeEntity;
 import dk.cphbusiness.errorHandling.ApiException;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class EmployeeController implements IController{
-    private static IDAO<Employee> dao;
+    private static IDAO<EmployeeEntity> dao;
     private static EmployeeController employeeHandler;
 
     public static EmployeeController getHandler() {
@@ -33,8 +33,8 @@ public class EmployeeController implements IController{
     @Override
     public Handler getAll() {
         return context -> {
-            List<Employee> employees = dao.getAll();
-            context.json(employees);
+            List<EmployeeEntity> employeeEntities = dao.getAll();
+            context.json(employeeEntities);
         };
     }
 // get employee by id
@@ -44,8 +44,8 @@ public class EmployeeController implements IController{
             @Override
             public void handle(Context ctx) throws Exception {
                 String id = ctx.pathParam("id");
-                Employee employee = dao.getById(id);
-                ctx.json(employee);
+                EmployeeEntity employeeEntity = dao.getById(id);
+                ctx.json(employeeEntity);
             }
         };
     }
@@ -56,14 +56,14 @@ public class EmployeeController implements IController{
             @Override
             public void handle(Context context) throws Exception {
                 EmployeeDTO employeeDTO = getValidatedDTO(context);
-                Employee employee = employeeDTO.asEntity();
-                Employee createdEmployee = null;
+                EmployeeEntity employeeEntity = employeeDTO.asEntity();
+                EmployeeEntity createdEmployeeEntity = null;
                 try {
-                    createdEmployee = dao.create(employee);
+                    createdEmployeeEntity = dao.create(employeeEntity);
                 } catch (Exception e) {
                     context.status(404).json(new ApiException(404, e.getMessage()));
                 }
-                context.json(new EmployeeDTO(createdEmployee));
+                context.json(new EmployeeDTO(createdEmployeeEntity));
             }
         };
     }
@@ -75,13 +75,13 @@ public class EmployeeController implements IController{
             public void handle(Context context) throws Exception {
                 String validatedId = context
                         .pathParamAsClass("id", String.class)
-                        .check(pathParamId -> dao.validateId(pathParamId), "No Employee with provided id found")
+                        .check(pathParamId -> dao.validateId(pathParamId), "No EmployeeEntity with provided id found")
                         .get();
                 Long id = Long.parseLong(validatedId);
-                Employee employee = getValidatedDTO(context).asEntity();
-                employee.setId(id);
-                Employee updatedEmployee = dao.update(employee);
-                context.json(new EmployeeDTO(updatedEmployee));
+                EmployeeEntity employeeEntity = getValidatedDTO(context).asEntity();
+                employeeEntity.setId(id);
+                EmployeeEntity updatedEmployeeEntity = dao.update(employeeEntity);
+                context.json(new EmployeeDTO(updatedEmployeeEntity));
             }
     };
     }
@@ -93,11 +93,11 @@ public class EmployeeController implements IController{
             public void handle(@NotNull Context context) throws Exception {
                 String validatedId = context
                         .pathParamAsClass("id", String.class)
-                        .check(pathParamId -> dao.validateId(pathParamId), "No Employee with provided id found")
+                        .check(pathParamId -> dao.validateId(pathParamId), "No EmployeeEntity with provided id found")
                         .get();
                 Long id = Long.parseLong(validatedId);
-                Employee deletedEmployee = dao.delete(id);
-                context.json(new EmployeeDTO(deletedEmployee));
+                EmployeeEntity deletedEmployeeEntity = dao.delete(id);
+                context.json(new EmployeeDTO(deletedEmployeeEntity));
             }
         };
     }

@@ -1,8 +1,6 @@
 package dk.cphbusiness.errorHandling;
 
-import dk.cphbusiness.errorHandling.ApiException;
 import io.javalin.http.Context;
-import io.javalin.util.JavalinException;
 import io.javalin.http.ExceptionHandler;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -10,7 +8,7 @@ public class GenericExceptionHandler implements ExceptionHandler<Exception> {
     @Override
     public void handle(Exception e, Context ctx) {
         if (e instanceof ApiException) {
-            ctx.status(HttpStatus.BAD_REQUEST_400);
+            ctx.status(((ApiException) e).getStatusCode());
         } else {
             ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500);
         }

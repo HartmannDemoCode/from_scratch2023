@@ -1,8 +1,8 @@
 package dk.cphbusiness.dtos;
 
 
-import dk.cphbusiness.entities.User;
-import java.security.Principal;
+import dk.cphbusiness.entities.UserEntity;
+
 import java.util.Set;
 
 import lombok.*;
@@ -12,18 +12,18 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class UserDTO implements IDTO<User> {
+public class UserDTO implements IDTO<UserEntity> {
 
     private String username;
     private String password;
     private Set<String> roles;
 
-    public UserDTO(User user) {
-        if(user == null) {
+    public UserDTO(UserEntity userEntity) {
+        if(userEntity == null) {
             return;
         }
-        this.username = user.getUserName();
-        this.roles = user.getRolesAsStrings();
+        this.username = userEntity.getUserName();
+        this.roles = userEntity.getRolesAsStrings();
     }
 
 //    public UserDTO(String username, String[] roles) {
@@ -41,7 +41,7 @@ public class UserDTO implements IDTO<User> {
     }
 
     @Override
-    public User asEntity() {
-        return new User(username, password);
+    public UserEntity asEntity() {
+        return new UserEntity(username, password);
     }
 }

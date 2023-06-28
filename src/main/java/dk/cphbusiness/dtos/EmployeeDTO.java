@@ -1,6 +1,6 @@
 package dk.cphbusiness.dtos;
 
-import dk.cphbusiness.entities.Employee;
+import dk.cphbusiness.entities.EmployeeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,19 +12,19 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDTO implements IDTO<Employee>{
+public class EmployeeDTO implements IDTO<EmployeeEntity>{
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
     private String departmentName;
-    public EmployeeDTO(Employee e){
+    public EmployeeDTO(EmployeeEntity e){
         this.id = e.getId();
         this.firstName = e.getFirstName();
         this.lastName = e.getLastName();
         this.email = e.getEmail();
-        if(e.getDepartment() != null) {
-            this.departmentName = e.getDepartment().getDepartmentName();
+        if(e.getDepartmentEntity() != null) {
+            this.departmentName = e.getDepartmentEntity().getDepartmentName();
         }
     }
     public EmployeeDTO(String firstName, String lastName, String email, String departmentName) {
@@ -33,8 +33,8 @@ public class EmployeeDTO implements IDTO<Employee>{
         this.email = email;
         this.departmentName = departmentName;
     }
-    public Set<EmployeeDTO> getEmployeeDTOs(Set<Employee> employees) {
-        Set<EmployeeDTO> employeeDTOS = employees.stream().map(EmployeeDTO::new).collect(java.util.stream.Collectors.toSet());
+    public Set<EmployeeDTO> getEmployeeDTOs(Set<EmployeeEntity> employeeEntities) {
+        Set<EmployeeDTO> employeeDTOS = employeeEntities.stream().map(EmployeeDTO::new).collect(java.util.stream.Collectors.toSet());
         return employeeDTOS;
     }
 
@@ -49,7 +49,7 @@ public class EmployeeDTO implements IDTO<Employee>{
                 '}';
     }
     @Override
-    public Employee asEntity() {
-        return new Employee(firstName, lastName, email);
+    public EmployeeEntity asEntity() {
+        return new EmployeeEntity(firstName, lastName, email);
     }
 }

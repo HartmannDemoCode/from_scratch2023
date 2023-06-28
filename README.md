@@ -375,7 +375,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "employee")
+@Table(name = "employeeEntity")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -429,7 +429,7 @@ public class Department {
     private String departmentDescription;
 
     @OneToMany(mappedBy = "department")
-    private java.util.Set<Employee> employees;
+    private java.util.Set<Employee> employeeEntities;
 
     public Department(DepartmentDTO departmentDTO) {
         this.id = departmentDTO.getId();
@@ -437,15 +437,15 @@ public class Department {
         this.departmentCode = departmentDTO.getDepartmentCode();
         this.departmentDescription = departmentDTO.getDepartmentDescription();
         if(departmentDTO.getEmployeeDTOs() != null) {
-            this.employees = departmentDTO.getEmployeeDTOs().stream().map(Employee::new).collect(java.util.stream.Collectors.toSet());
+            this.employeeEntities = departmentDTO.getEmployeeDTOs().stream().map(Employee::new).collect(java.util.stream.Collectors.toSet());
         }
     }
 
-    public void addEmployee(Employee employee) {
-        this.employees.add(employee);
+    public void addEmployee(Employee employeeEntity) {
+        this.employeeEntities.add(employeeEntity);
     }
-    public void removeEmployee(Employee employee) {
-        this.employees.remove(employee);
+    public void removeEmployee(Employee employeeEntity) {
+        this.employeeEntities.remove(employeeEntity);
     }
 }
 ```
@@ -492,8 +492,8 @@ public class EmployeeDTO {
         this.email = email;
         this.departmentName = departmentName;
     }
-    public Set<EmployeeDTO> getEmployeeDTOs(Set<Employee> employees) {
-        Set<EmployeeDTO> employeeDTOS = employees.stream().map(EmployeeDTO::new).collect(java.util.stream.Collectors.toSet());
+    public Set<EmployeeDTO> getEmployeeDTOs(Set<Employee> employeeEntities) {
+        Set<EmployeeDTO> employeeDTOS = employeeEntities.stream().map(EmployeeDTO::new).collect(java.util.stream.Collectors.toSet());
         return employeeDTOS;
     }
 
@@ -548,8 +548,8 @@ public class DepartmentDTO {
         this.departmentCode = departmentCode;
         this.departmentDescription = departmentDescription;
     }
-    public Set<DepartmentDTO> getDepartmentDTOs(Set<Department> departments) {
-        return departments.stream().map(DepartmentDTO::new).collect(java.util.stream.Collectors.toSet());
+    public Set<DepartmentDTO> getDepartmentDTOs(Set<Department> departmentEntities) {
+        return departmentEntities.stream().map(DepartmentDTO::new).collect(java.util.stream.Collectors.toSet());
     }
 }
 ```
@@ -585,8 +585,8 @@ public interface IDAO<T> {
 ```java
 package dk.cphbusiness.config;
 
-import dk.cphbusiness.entities.Department;
-import dk.cphbusiness.entities.Employee;
+import dk.cphbusiness.entities.DepartmentEntity;
+import dk.cphbusiness.entities.EmployeeEntity;
 import dk.cphbusiness.utils.Utils;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
@@ -763,12 +763,12 @@ app.routes(RootRoutes.getRoutes(app));
 ```
 
 - create a new file: EmployeeRoutes.java
-- create a method to set up the employee routes:
+- create a method to set up the employeeEntity routes:
 
 ```java
 public static EndpointGroup getEmployeeRoutes() {
         return () -> {
-            path("employees", () -> {
+            path("employeeEntities", () -> {
                 get(EmployeeController::getEmployees);
                 post(EmployeeController::createEmployee);
                 path(":id", () -> {
@@ -782,12 +782,12 @@ public static EndpointGroup getEmployeeRoutes() {
 ```
 
 - create the EmployeeController.java file
-- create a method to get all employees:
+- create a method to get all employeeEntities:
 
 ```java
 public static void getEmployees(Context context) {
-        List<Employee> employees = employeeDAO.getAllEmployees();
-        context.json(employees);
+        List<Employee> employeeEntities = employeeDAO.getAllEmployees();
+        context.json(employeeEntities);
     }
 ```
 ### Security
@@ -795,8 +795,8 @@ public static void getEmployees(Context context) {
 ```java
 public interface ISecurityDAO<U,R> {
 U getVerifiedUser(String username, String password);
-R createRole(String role);
-boolean hasRole(String role, User user);
+R createRole(String roleEntity);
+boolean hasRole(String roleEntity, User userEntity);
 String createToken(String username, Set<String> roles);
 U verifyToken(String token);
 }
