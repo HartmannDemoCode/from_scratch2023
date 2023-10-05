@@ -805,10 +805,15 @@ User verifyToken(String token);
 - implement the IDAO interface in the UserDao file as well
 -  
 
-
-
-
-
+## Pitfalls
+- testcontainer hangs during test. Last message: Container testcontainers/ryuk:0.4.0 is starting
+  - Solution (all steps may not be necessary. But this is what worked for me)
+    - Add line to ~/.testcontainers.properties: ryuk.container.privileged=true
+    - Remove all testcontainer containers and images
+    - Restart docker desktop
+    - Restart Intellij
+    - Run test again
+  
 
 
 
