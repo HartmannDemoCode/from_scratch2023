@@ -95,8 +95,7 @@ public class EmployeeController implements IController{
                         .pathParamAsClass("id", String.class)
                         .check(pathParamId -> employeeDAO.validateId(pathParamId), "No EmployeeEntity with provided id found")
                         .get();
-                Long id = Long.parseLong(validatedId);
-                EmployeeEntity deletedEmployeeEntity = employeeDAO.delete(id);
+                EmployeeEntity deletedEmployeeEntity = employeeDAO.delete(validatedId);
                 context.json(new EmployeeDTO(deletedEmployeeEntity));
             }
         };

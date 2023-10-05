@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "department")
+@NamedQueries({@NamedQuery(name="DepartmentEntity.deleteAllRows", query = "DELETE from DepartmentEntity")})
 public class DepartmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -23,6 +24,12 @@ public class DepartmentEntity {
 
     @OneToMany(mappedBy = "departmentEntity")
     private java.util.Set<EmployeeEntity> employeeEntities;
+
+    public DepartmentEntity(String departmentName, String departmentCode, String departmentDescription) {
+        this.departmentName = departmentName;
+        this.departmentCode = departmentCode;
+        this.departmentDescription = departmentDescription;
+    }
 
 //    public DepartmentEntity(DepartmentDTO departmentDTO) {
 //        this.id = departmentDTO.getId();

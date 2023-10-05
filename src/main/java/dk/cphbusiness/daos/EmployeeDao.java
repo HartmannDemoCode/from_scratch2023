@@ -62,7 +62,7 @@ public class EmployeeDao implements IDAO<EmployeeEntity>{
     }
 
     @Override
-    public EmployeeEntity delete(Long id) throws EntityNotFoundException {
+    public EmployeeEntity delete(String id) throws EntityNotFoundException {
         EntityManager em = getEntityManager();
         EmployeeEntity employeeEntity = em.find(EmployeeEntity.class, id);
         if (employeeEntity == null)
@@ -94,7 +94,7 @@ public class EmployeeDao implements IDAO<EmployeeEntity>{
         EmployeeEntity employeeEntity = new EmployeeEntity("Peter","Petersen","pp@mail.com");
         EmployeeEntity employeeEntity2 = new EmployeeEntity("Helge","Hansen","hh@mail.com");
         try {
-            dao.getAll().forEach(emp->dao.delete(emp.getId()));
+            dao.getAll().forEach(emp->dao.delete(emp.getId().toString()));
             dao.create(employeeEntity);
             dao.create(employeeEntity2);
         } catch (Exception e) {

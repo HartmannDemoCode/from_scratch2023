@@ -15,6 +15,7 @@ import java.util.Properties;
 
 public class HibernateConfig {
     private static EntityManagerFactory emf;
+    private static boolean isIntegrationTest = false; // this flag is set for
     private static EntityManagerFactory emfTest;
     public static EntityManagerFactory getEntityManagerFactory() {
         if (emf == null)
@@ -24,10 +25,10 @@ public class HibernateConfig {
     public static EntityManagerFactory getEntityManagerFactoryForTest() {
         if (emfTest == null)
             emfTest = createEMF(true);
-        return emf;
+        return emfTest;
     }
-    // IMPORTANT: Add Entity classes here for them to be registered with Hibernate
-    public static void getAnnotationConfiguration(Configuration configuration) {
+    // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
+    private static void getAnnotationConfiguration(Configuration configuration) {
         configuration.addAnnotatedClass(DepartmentEntity.class);
         configuration.addAnnotatedClass(EmployeeEntity.class);
         configuration.addAnnotatedClass(UserEntity.class);
@@ -40,7 +41,7 @@ public class HibernateConfig {
             Properties props = new Properties();
             // Set the properties
             setBaseProperties(props);
-            if(forTest) {
+            if(forTest || isIntegrationTest) {
                 props = setTestProperties(props);
             }
             else if(System.getenv("DEPLOYED") != null) {
@@ -99,5 +100,8 @@ public class HibernateConfig {
 //        props.put("hibernate.show_sql", "true");
 //        props.put("hibernate.hbm2ddl.auto", "create-drop");
         return props;
+    }
+    public static void setTestMode(boolean isTest) {
+        isIntegrationTest = isTest;
     }
 }

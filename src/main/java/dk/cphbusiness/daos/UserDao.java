@@ -82,7 +82,7 @@ public class UserDao implements IDAO<UserEntity>, ISecurityDAO<UserEntity, RoleE
     }
 
     @Override
-    public UserEntity delete(Long id) throws EntityNotFoundException {
+    public UserEntity delete(String id) throws EntityNotFoundException {
         EntityManager em = getEntityManager();
         UserEntity userEntity = em.find(UserEntity.class, id);
         if (userEntity == null)

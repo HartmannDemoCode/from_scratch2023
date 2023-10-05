@@ -39,7 +39,7 @@ This is a simple REST API that allows you to create, read, update and delete;
     <junit.version>5.9.1</junit.version>
     <hamcrest.version>2.0.0.0</hamcrest.version>
     <restassured.version>5.3.0</restassured.version>
-    <testcontainers.version>1.18.0</testcontainers.version>
+    <testcontainers.version>1.19.0</testcontainers.version>
     <logging.version>2.14.1</logging.version>
     <lombok.version>1.18.20</lombok.version>
     <jbcrypt.version>0.4</jbcrypt.version>
@@ -70,7 +70,7 @@ This is a simple REST API that allows you to create, read, update and delete;
 
 ### Dependencies
 
-- Inside *dependencies* add **Javalin** for restful api (Study: https://javalin.io/documentation#getting-started)
+- Inside the *dependencies* element add **Javalin** for restful api (Study: https://javalin.io/documentation#getting-started)
 
 ```xml
 <dependency>
@@ -336,7 +336,7 @@ This is a simple REST API that allows you to create, read, update and delete;
 </plugin>
 ```
 
-- In the maven shade plugin remember to change the main class to the main class of your application
+- In the maven shade plugin remember to change the **main class** to the main class of your application
 - Now remember to click the *load maven changes* button in the top right corner of the maven tab in IntelliJ
 
 ## Step 2: Add a web server
@@ -791,14 +791,14 @@ public static void getEmployees(Context context) {
     }
 ```
 ### Security
-- create an interface with the following methods (U for User, R for Role):
+- create an interface with the following methods:
 ```java
-public interface ISecurityDAO<U,R> {
-U getVerifiedUser(String username, String password);
-R createRole(String roleEntity);
-boolean hasRole(String roleEntity, User userEntity);
-String createToken(String username, Set<String> roles);
-U verifyToken(String token);
+public interface ISecurityDAO {
+User getVerifiedUser(String username, String password);
+Role createRole(String roleEntity);
+boolean hasRole(String roleName, User userEntity);
+String createToken(String userName, Set<String> roles);
+User verifyToken(String token);
 }
 ```
 - implement the interface in a UserDao file
